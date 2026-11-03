@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東華校園智慧生活與探索平台 | NDHU Campus Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .forest-theme { background-color: #003300; }
+        .forest-text { color: #003300; }
+        .accent-yellow { background-color: #FEF08A; }
+
+        /* 手機版導覽列完美適應螢幕寬度，平均分配不跑版 */
+        @media (max-width: 640px) {
+            .mobile-nav-fix {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+            }
+            .mobile-nav-fix button {
+                flex: 1;
+                padding-left: 4px;
+                padding-right: 4px;
+                font-size: 11px;
+                text-align: center;
+                justify-content: center;
+            }
+            .mobile-nav-fix button i {
+                display: none; /* 手機版隱藏icon以節省空間，字體更清晰 */
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+    <!-- Header (隨頁面正常滾動) -->
+    <header class="forest-theme text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-compass text-2xl text-yellow-200"></i>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wider">東華校園智慧導覽與探索</h1>
+                    <p class="text-xs text-slate-300">NDHU Campus Hub & Navigation</p>
+                </div>
+            </div>
+            <!-- 搜尋欄 -->
+            <div class="w-full sm:w-auto relative">
+                <input type="text" id="searchInput" placeholder="搜尋教室、系館、學餐..." class="w-full sm:w-64 px-4 py-1.5 pl-9 rounded-full text-slate-800 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300" oninput="filterContent(this.value)">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs (已套用手機版均分適應) -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-xs">
+        <div class="max-w-4xl mx-auto px-1 mobile-nav-fix flex">
+            <button onclick="switchTab('nav')" class="tab-btn py-3 text-xs sm:text-sm font-medium border-b-2 border-emerald-800 forest-text flex items-center gap-1.5 whitespace-nowrap" data-target="nav">
+                <i class="fa-solid fa-map-location-dot"></i> 導航
+            </button>
+            <button onclick="switchTab('spots')" class="tab-btn py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 whitespace-nowrap" data-target="spots">
+                <i class="fa-solid fa-landmark"></i> 景點
+            </button>
+            <button onclick="switchTab('canteen')" class="tab-btn py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 whitespace-nowrap" data-target="canteen">
+                <i class="fa-solid fa-utensils"></i> 學餐
+            </button>
+            <button onclick="switchTab('events')" class="tab-btn py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 whitespace-nowrap" data-target="events">
+                <i class="fa-solid fa-calendar-days"></i> 活動
+            </button>
+            <button onclick="switchTab('interactive')" class="tab-btn py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 whitespace-nowrap relative" data-target="interactive">
+                <i class="fa-solid fa-gamepad"></i> 互動 <span class="bg-yellow-200 text-amber-900 text-[9px] px-1 rounded font-bold">新</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- 1. 精確導航與平面圖 -->
+        <section id="tab-nav" class="tab-content space-y-6">
+            <div class="bg-emerald-900 text-white p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-lg font-bold mb-1">東華地圖快速導航</h2>
+                    <p class="text-xs text-emerald-200">免下載 App，一鍵開啟外部地圖帶你到東華各角落。</p>
+                </div>
+                <a href="https://maps.google.com/?q=國立東華大學" target="_blank" class="accent-yellow text-slate-900 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm hover:bg-yellow-300 transition flex items-center gap-2">
+                    <i class="fa-solid fa-location-arrow"></i> 開啟導覽地圖
+                </a>
+            </div>
+
+            <!-- 院系建築與平面圖框架 -->
+            <div>
+                <h3 class="font-bold text-slate-800 mb-3 text-sm tracking-wide">各院建築與每層樓平面圖</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-700 text-sm">人社一館 / 人社二館</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">文學院/歷史/中文</span>
+                        </div>
+                        <div class="w-full h-32 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 text-xs">
+                            [ 樓層平面圖框架 - 興建/建置中 ]
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-700 text-sm">理工學院一、二館</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">資工/數學/電機</span>
+                        </div>
+                        <div class="w-full h-32 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 text-xs">
+                            [ 樓層平面圖框架 - 興建/建置中 ]
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-700 text-sm">管理學院</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">企管/資管/國企</span>
+                        </div>
+                        <div class="w-full h-32 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 text-xs">
+                            [ 樓層平面圖框架 - 興建/建置中 ]
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-700 text-sm">圖書館 / 行政大樓</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">核心設施</span>
+                        </div>
+                        <div class="w-full h-32 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 text-xs">
+                            [ 樓層平面圖框架 - 興建/建置中 ]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 景點與裝置藝術 -->
+        <section id="tab-spots" class="tab-content hidden space-y-4">
+            <h2 class="font-bold text-slate-800 text-base">校園地景與裝置藝術故事</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-2">
+                    <div class="w-full h-40 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 text-xs">
+                        [ 景點圖片框架 ]
+                    </div>
+                    <h3 class="font-bold text-slate-800">東湖與東湖樂活亭</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">東華最具代表性的景致，湖水映照中央山脈與雲朵，是散步、談心與看黑天鵝的最佳去處。</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-2">
+                    <div class="w-full h-40 bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 text-xs">
+                        [ 裝置藝術圖片框架 ]
+                    </div>
+                    <h3 class="font-bold text-slate-800">圖書館前公共藝術</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">融合花蓮在地石材與現代幾何造型，象徵知識的流動與無界限的學術探索精神。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 學餐雷達 -->
+        <section id="tab-canteen" class="tab-content hidden space-y-4">
+            <h2 class="font-bold text-slate-800 text-base">學餐與周邊美食評價</h2>
+            <div class="space-y-3">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-slate-800 text-sm">集賢館美食街</h3>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-medium">校內中心</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">自助餐、麵食、手搖飲，學生覓食首選。</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-amber-500 font-bold text-sm">★ 4.3</span>
+                        <p class="text-[10px] text-slate-400">120則評價</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-slate-800 text-sm">多容館餐廳</h3>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-medium">宿舍區旁</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">多元異國料理、簡餐、宵夜好去處。</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-amber-500 font-bold text-sm">★ 4.1</span>
+                        <p class="text-[10px] text-slate-400">95則評價</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 活動快報 -->
+        <section id="tab-events" class="tab-content hidden space-y-4">
+            <h2 class="font-bold text-slate-800 text-base">近期校園活動與講座</h2>
+            <div class="space-y-3">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex gap-4 items-center">
+                    <div class="bg-yellow-100 text-amber-900 rounded-xl p-3 text-center min-w-[60px]">
+                        <span class="block text-xs font-bold">11月</span>
+                        <span class="text-lg font-extrabold">15</span>
+                    </div>
+                    <div>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">藝文講座</span>
+                        <h3 class="font-bold text-slate-800 text-sm mt-1">東華秋季藝術節：在地創生與美學對談</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">人社一館講堂 | 19:00 - 21:00</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 互動體驗 (新分類) -->
+        <section id="tab-interactive" class="tab-content hidden space-y-4">
+            <div class="bg-amber-50 border border-amber-200 p-6 rounded-2xl text-center space-y-3">
+                <div class="w-12 h-12 bg-amber-200 text-amber-900 rounded-full flex items-center justify-center mx-auto text-xl">
+                    <i class="fa-solid fa-person-digging"></i>
+                </div>
+                <h2 class="font-bold text-amber-900 text-lg">沉浸式互動體驗（開發中）</h2>
+                <p class="text-xs text-amber-800 max-w-md mx-auto leading-relaxed">
+                    我們正在打造「東華校園大冒險」答題拿獎勵與校園實境解謎機制！未來你可以透過回答校園冷知識、尋找隱藏打卡點來累積點數，兌換學餐優惠券或精美文創小物。敬請期待！
+                </p>
+                <div class="pt-2">
+                    <button class="bg-amber-800 text-white text-xs px-4 py-2 rounded-xl font-bold shadow-xs hover:bg-amber-900 transition">
+                        通知我上線
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
+        <p>© 2026 東華校園智慧導覽與探索平台 | 專為東華人設計</p>
+    </footer>
+
+    <!-- Tab Switching Script -->
+    <script>
+        function switchTab(targetId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.getElementById('tab-' + targetId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-800', 'forest-text');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            const activeBtn = document.querySelector(`[data-target="${targetId}"]`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.add('border-emerald-800', 'forest-text');
+        }
+
+        function filterContent(query) {
+            console.log("搜尋關鍵字:", query);
+        }
+    </script>
+</body>
+</html>
